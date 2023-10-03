@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Chat WebSocket</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="stomp.js"></script>
+    <script src="https://ga.jspm.io/npm:@stomp/stompjs@7.0.0/esm6/index.js"></script>
+    <script src="app.js"></script>
+</head>
+
+<body onload="disconnect()">
+
+    <button id="disconnect" disabled="disabled" onclick="disconnect();">
+        Disconnect
+    </button>
+
+    <section>
+        <h2>Rooms</h2>
+        <ul>
+            <li>
+                <input type="number" value="1" id="chat-id" placeholder="Write a message..." />
+                <button id="connect" onclick="connect();">CONNECT</button>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Chat</h2>
+        <div id="conversationDiv">
+            <input type="text" id="text" placeholder="Write a message..." />
+            <button id="sendMessage" onclick="sendMessage();">Send</button>
+            <p id="response"></p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Login</h2>
+        <input type="text" id="login" placeholder="Email" />
+        <input type="password" id="password" placeholder="Password" />
+        <button id="loginButton" onclick="login();">Login</button>
+    </section>
+
+</body>
+
+</html>
