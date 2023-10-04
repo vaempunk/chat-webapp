@@ -23,7 +23,6 @@ public class WebsocketsApplication {
 		SpringApplication.run(WebsocketsApplication.class, args);
 	}
 
-	@Bean
 	public CommandLineRunner commandLineRunner(ChatService chatService, UserService userService,
 			RoleRepository roleRepository, MessageService messageService) {
 		return args -> {

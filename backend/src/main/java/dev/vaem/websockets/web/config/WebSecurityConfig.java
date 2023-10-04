@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/**", "/signup/**", "/chat/**", "/", "*.js", "*.html").permitAll()
+                        .requestMatchers("/auth/**", "/signup/**", "/chat/**", "/", "*.js", "*.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/chats").hasRole(Role.Name.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/chats/*").hasRole(Role.Name.ADMIN.name())
                         .requestMatchers(HttpMethod.DELETE, "/chats/*").hasRole(Role.Name.ADMIN.name())
