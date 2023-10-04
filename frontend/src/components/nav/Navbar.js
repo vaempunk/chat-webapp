@@ -1,22 +1,21 @@
 import { AccountCircle } from "@mui/icons-material";
-import MenuIcon from "@mui/icons-material/Menu";
 import {
   Alert,
   AppBar,
   Box,
   Button,
-  IconButton,
   Snackbar,
   Stack,
   Toolbar,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useState } from "react";
 import { AuthUtils } from "../../utils/authUtils";
 import LoginDialog from "./LoginDialog";
 import SignUpDialog from "./SignUpDialog";
 
-function Navbar() {
+function Navbar(props) {
+  const { setAuthenticated } = props;
   const [isLoginDialogOpen, setLoginDialogOpen] = useState(false);
   const [isSingupDialogOpen, setSignupDialogOpen] = useState(false);
   const [successLoginSnackbarOpen, setSucccessLoginSnackbarOpen] =
@@ -29,7 +28,7 @@ function Navbar() {
       {AuthUtils.getToken() && (
         <Stack direction={"row"} spacing={2}>
           <AccountCircle fontSize="large" />
-          <Button color="inherit" onClick={() => AuthUtils.removeToken()}>
+          <Button color="inherit" onClick={() => {AuthUtils.removeToken(); setAuthenticated(false)}}>
             Logout
           </Button>
         </Stack>
@@ -46,6 +45,7 @@ function Navbar() {
               AuthUtils.setToken(data.token);
               setLoginDialogOpen(false);
               setSucccessLoginSnackbarOpen(true);
+              setAuthenticated(true);
             }}
           />
           <Button color="inherit" onClick={() => setSignupDialogOpen(true)}>
@@ -68,17 +68,8 @@ function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
+            Chat
           </Typography>
           {navRightSide}
         </Toolbar>

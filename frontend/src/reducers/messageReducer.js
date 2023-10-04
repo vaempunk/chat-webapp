@@ -3,27 +3,12 @@ import { AuthUtils } from "../utils/authUtils";
 
 function messageReducer(state, action) {
   if (action.type === "SEND") {
-    fetch(`${API_BASE_URL}/chats/${action.chatId}/messages`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + AuthUtils.getToken(),
-      },
-      body: JSON.stringify({
-        text: action.text,
-      }),
-    })
-      .then((resp) => {
-        if (resp.ok) {
-          return Promise.resolve({ error: null });
-        } else {
-          return resp.json();
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        return state;
-      });
+    if (action.data.error === null) return { textError: null };
+    const textError = action.data.details
+      .filter((d) => d.key === "text")
+      .map((d) => d.value)
+      .join(", ");
+    return { textError };
   } else if (action.type === "DELETE") {
     fetch(`${API_BASE_URL}/messages/${action.messageId}`, {
       method: "DELETE",

@@ -33,8 +33,10 @@ function deleteMessage(messageId) {
   });
 }
 
-export const MessageApi = {
+const MessageApi = {
   getMessages,
   sendMessage,
   deleteMessage,
 };
+
+export default MessageApi;

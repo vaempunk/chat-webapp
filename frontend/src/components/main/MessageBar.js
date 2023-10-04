@@ -5,7 +5,6 @@ import {
   ListItem,
   ListItemText,
   ListSubheader,
-  Paper,
   Stack,
 } from "@mui/material";
 import { useReducer } from "react";
@@ -13,6 +12,7 @@ import useMessages from "../../hooks/useMessages";
 import useUser from "../../hooks/useUser";
 import messageReducer from "../../reducers/messageReducer";
 import MessageForm from "./MessageForm";
+import moment from "moment/moment";
 
 function MessageBar(props) {
   const { currentChatId } = props;
@@ -28,12 +28,28 @@ function MessageBar(props) {
     .filter((message) => message.chat.id === currentChatId)
     .map((message) => (
       <ListItem key={message.id}>
-        <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ width: "100%" }}>
-          <ListItemText>
-            {message.sender.username}: {message.text} ({message.sentAt})
-          </ListItemText>
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="space-between"
+          sx={{ width: "100%" }}
+        >
+          <ListItemText
+            primary={message.sender.username}
+            secondary={message.text}
+            sx={{
+              width: "75%",
+            }}
+          ></ListItemText>
+          <ListItemText
+            sx={{
+              width: "25%",
+              textAlign: "right",
+            }}
+            secondary={moment(message.sentAt, moment.ISO_8601).fromNow()}
+          ></ListItemText>
           {user.role.name === "ADMIN" && (
-            <IconButton onClick={() => onMessageDelete(message.id)}>
+            <IconButton onClick={() => onMessageDelete(message.id)} sx={{height: "100%"}}>
               <DeleteIcon />
             </IconButton>
           )}
@@ -43,14 +59,12 @@ function MessageBar(props) {
     .reverse();
 
   return (
-    <Paper>
-      <Stack padding={2}>
-        <List subheader={<ListSubheader>Messages</ListSubheader>}>
-          {messageList}
-        </List>
-        <MessageForm chatId={currentChatId} />
-      </Stack>
-    </Paper>
+    <Stack padding={1.5}>
+      <List subheader={<ListSubheader>Messages</ListSubheader>}>
+        {messageList}
+      </List>
+      <MessageForm chatId={currentChatId} />
+    </Stack>
   );
 }
 

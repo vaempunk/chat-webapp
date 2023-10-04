@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import dev.vaem.websockets.domain.entity.Chat;
 import dev.vaem.websockets.domain.exception.ChatExceptionFactory;
 import dev.vaem.websockets.domain.repository.ChatRepository;
+import dev.vaem.websockets.domain.repository.MessageRepository;
 import dev.vaem.websockets.domain.service.ChatService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -15,6 +17,7 @@ import lombok.AllArgsConstructor;
 public class ChatServiceImpl implements ChatService {
     
     private final ChatRepository chatRepository;
+    private final MessageRepository messageRepository;
 
     @Override
     public Chat getChat(long chatId) {
@@ -49,9 +52,11 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    @Transactional
     public void deleteChat(long chatId) {
         if (!chatRepository.existsById(chatId))
             throw ChatExceptionFactory.chatNotFoundException();
+        messageRepository.deleteByChatId(chatId);
         chatRepository.deleteById(chatId);
     }
 

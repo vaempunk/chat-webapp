@@ -16,6 +16,7 @@ import dev.vaem.websockets.domain.repository.ChatRepository;
 import dev.vaem.websockets.domain.repository.MessageRepository;
 import dev.vaem.websockets.domain.repository.UserRepository;
 import dev.vaem.websockets.domain.service.MessageService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -27,17 +28,20 @@ public class MessageServiceImpl implements MessageService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public Message getMessage(long messageId) {
         return messageRepository.findById(messageId)
                 .orElseThrow(MessageExceptionFactory::messageNotFoundException);
     }
 
     @Override
+    @Transactional
     public Page<Message> getAllMessagesInChat(long chatId, Pageable pageable) {
         return messageRepository.findByChatId(chatId, pageable);
     }
 
     @Override
+    @Transactional
     public Message sendMessage(Message message) {
         var chat = chatRepository.findById(message.getChatId())
                 .orElseThrow(ChatExceptionFactory::chatNotFoundException);

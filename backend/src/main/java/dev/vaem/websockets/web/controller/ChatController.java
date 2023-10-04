@@ -40,7 +40,7 @@ public class ChatController {
 
     @GetMapping("/chats")
     public Page<Chat> getChats(@RequestParam(name = "page", defaultValue = "0") @Min(0) int page) {
-        return chatService.getChats(PageRequest.of(page, 10, Sort.by("name").ascending()));
+        return chatService.getChats(PageRequest.of(page, 100, Sort.by("name").ascending()));
     }
 
     @PostMapping("/chats")
@@ -76,7 +76,7 @@ public class ChatController {
     public Page<User> getChatParticipants(@PathVariable("id") long chatId,
             @RequestParam(name = "page", defaultValue = "0") @Min(0) int page) {
         return chatParticipantService.getParticipants(chatId,
-                PageRequest.of(page, 10, Sort.by("sender.username").ascending()));
+                PageRequest.of(page, 100, Sort.by("sender.username").ascending()));
     }
 
 }

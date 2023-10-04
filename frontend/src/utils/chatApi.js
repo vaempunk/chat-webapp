@@ -64,7 +64,7 @@ function deleteChat(chatId) {
   });
 }
 
-export const ChatApi = {
+const ChatApi = {
   getChats,
   getParticipants,
   addChat,
@@ -72,3 +72,5 @@ export const ChatApi = {
   updateChat,
   deleteChat,
 };
+
+export default ChatApi;

@@ -2,18 +2,23 @@ import SendIcon from "@mui/icons-material/Send";
 import { Button, Stack, TextField } from "@mui/material";
 import { useReducer, useState } from "react";
 import messageReducer from "../../reducers/messageReducer";
+import MessageApi from "../../utils/messageApi";
 
 function MessageForm(props) {
   const { chatId } = props;
   const [text, setText] = useState("");
-  const [state, dispatch] = useReducer(messageReducer, { error: null });
+  const [state, dispatch] = useReducer(messageReducer, { textError: null });
 
   function onSendClick() {
-    dispatch({
-      type: "SEND",
-      chatId,
-      text,
-    });
+    MessageApi.sendMessage(chatId, text)
+      .then((resp) => {
+        if (resp.ok) {
+          return Promise.resolve({ error: null });
+        } else {
+          return resp.json();
+        }
+      })
+      .then((data) => dispatch({ type: "SEND", data: data }));
     setText("");
   }
 
@@ -25,8 +30,8 @@ function MessageForm(props) {
         fullWidth
         onChange={(e) => setText(e.target.value)}
         value={text}
-        error={state.error}
-        helperText={state.error}
+        error={state.textError !== null}
+        helperText={state.textError}
         size="small"
       />
       <Button

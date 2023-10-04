@@ -3,7 +3,7 @@ import { API_BASE_URL } from "../utils/apiConst";
 import { AuthUtils } from "../utils/authUtils";
 
 function useUser() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({ role: { name: "" } });
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/users/me`, {

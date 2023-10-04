@@ -1,4 +1,4 @@
-import { Box, List, ListItemButton, ListSubheader, Paper } from "@mui/material";
+import { Box, List, ListItemButton, ListSubheader } from "@mui/material";
 import useParticipants from "../../hooks/useParticipants";
 
 function ParticipantBar(props) {
@@ -10,13 +10,11 @@ function ParticipantBar(props) {
   ));
 
   return (
-    <Paper>
-      <Box padding={2}>
+      <Box padding={1.5}>
     <List subheader={<ListSubheader>Participants</ListSubheader>}>
       {participantList}
     </List>
     </Box>
-    </Paper>
   );
 }
 

@@ -6,14 +6,21 @@ import {
   List,
   ListItemButton,
   ListSubheader,
-  Paper,
-  Stack
+  Stack,
 } from "@mui/material";
 import useChats from "../../hooks/useChats";
+import useUser from "../../hooks/useUser";
+import { useState } from "react";
+import AddChatDialog from "./AddChatDialog";
+import ChatDeleteDialog from "./ChatDeleteDialog";
+import { AuthUtils } from "../../utils/authUtils";
 
 function ChatBar(props) {
   const { currentChatId, onChangeChatId } = props;
+  const [addChatOpen, setAddChatOpen] = useState(false);
+  const [deleteChatOpen, setDeleteChatOpen] = useState(false);
   const chats = useChats();
+  const user = useUser();
 
   const chatList = chats.map((chat) => (
     <ListItemButton
@@ -30,39 +37,52 @@ function ChatBar(props) {
       >
         <Box>{chat.name}</Box>
         <Box>
-          <IconButton size="small">
-            <MoreVertIcon />
-          </IconButton>
+          {user.role.name === "ADMIN" && (
+            <IconButton size="small" onClick={() => setDeleteChatOpen(true)}>
+              <MoreVertIcon />
+            </IconButton>
+          )}
         </Box>
       </Stack>
     </ListItemButton>
   ));
 
   return (
-    <Paper>
-      <Box padding={2}>
-        <List
-          subheader={
-            <ListSubheader>
-              <Stack
-                direction={"row"}
-                spacing={2}
-                justifyContent={"space-between"}
-              >
-                <Box>Chats</Box>
-                <Box>
-                  <IconButton size="small">
+    <Box padding={1.5}>
+      <List
+        subheader={
+          <ListSubheader>
+            <Stack
+              direction={"row"}
+              spacing={2}
+              justifyContent={"space-between"}
+            >
+              <Box>Chats</Box>
+              <Box>
+                {user.role.name === "ADMIN" && (
+                  <IconButton size="small" onClick={() => setAddChatOpen(true)}>
                     <AddIcon />
                   </IconButton>
-                </Box>
-              </Stack>
-            </ListSubheader>
-          }
-        >
-          {chatList}
-        </List>
-      </Box>
-    </Paper>
+                )}
+              </Box>
+            </Stack>
+          </ListSubheader>
+        }
+      >
+        {chatList}
+      </List>
+      <AddChatDialog
+        isOpen={addChatOpen}
+        onCancel={() => setAddChatOpen(false)}
+        onAddSuccess={() => setAddChatOpen(false)}
+      />
+      <ChatDeleteDialog
+        chatId={currentChatId}
+        isOpen={deleteChatOpen}
+        onCancel={() => setDeleteChatOpen(false)}
+        onDeleteSuccess={() => setDeleteChatOpen(false)}
+      />
+    </Box>
   );
 }
 

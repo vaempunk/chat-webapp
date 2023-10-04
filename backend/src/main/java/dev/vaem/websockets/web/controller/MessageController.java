@@ -32,7 +32,7 @@ public class MessageController {
     @GetMapping("/chats/{chatId}/messages")
     public Page<Message> getMessages(@PathVariable("chatId") @Positive long chatId,
             @RequestParam(name = "page", defaultValue = "0") @Min(0) int page) {
-        return messageService.getAllMessagesInChat(chatId, PageRequest.of(page, 10, Sort.by("sentAt").descending()));
+        return messageService.getAllMessagesInChat(chatId, PageRequest.of(page, 100, Sort.by("sentAt").descending()));
     }
 
     @PostMapping("/chats/{chatId}/messages")

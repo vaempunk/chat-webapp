@@ -3,6 +3,7 @@ package dev.vaem.websockets.web.util;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
@@ -26,7 +27,9 @@ public class JwtUtil {
     public JwtUtil() throws NoSuchAlgorithmException {
         expirationTimeMs = Duration.ofDays(1).toMillis();
         var generator = KeyPairGenerator.getInstance("RSA");
-        generator.initialize(2048);
+        var random = SecureRandom.getInstance("SHA1PRNG");
+        random.setSeed(0L);
+        generator.initialize(2048, random);
         keyPair = generator.generateKeyPair();
     }
 
