@@ -17,8 +17,10 @@ import dev.vaem.websockets.web.dto.PropertyAvailabilityResponse;
 import dev.vaem.websockets.web.dto.user.PasswordRequest;
 import dev.vaem.websockets.web.dto.user.RoleUpdateRequest;
 import dev.vaem.websockets.web.dto.user.UserRegistrationRequest;
+import dev.vaem.websockets.web.dto.user.UserResponse;
 import dev.vaem.websockets.web.dto.user.UserUpdateRequest;
 import dev.vaem.websockets.web.dto.user.UsernameAvailabilityRequest;
+import dev.vaem.websockets.web.util.mapper.UserMapper;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -29,18 +31,20 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/users/me")
-    public User getMe(@AuthenticationPrincipal long myId) {
-        return userService.getUser(myId);
+    public UserResponse getMe(@AuthenticationPrincipal long myId) {
+        var user = userService.getUser(myId);
+        return UserMapper.entityToResponse(user);
     }
 
     @PostMapping(value = "/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public User signup(
+    public UserResponse signup(
             @RequestBody @Valid UserRegistrationRequest userRequest) {
         var user = new User();
         user.setUsername(userRequest.username());
         user.setPassword(userRequest.password());
-        return userService.registerUser(user);
+        user = userService.registerUser(user);
+        return UserMapper.entityToResponse(user);
     }
 
     @GetMapping("/signup/username-availability")
@@ -51,13 +55,14 @@ public class UserController {
     }
 
     @PutMapping("/users/me")
-    public User updateMe(
+    public UserResponse updateMe(
             @RequestBody @Valid UserUpdateRequest userRequest,
             @AuthenticationPrincipal long myId) {
         var user = new User();
         user.setId(myId);
         user.setUsername(userRequest.username());
-        return userService.updateUser(user);
+        user = userService.updateUser(user);
+        return UserMapper.entityToResponse(user);
     }
 
     @PutMapping("/users/me/password")

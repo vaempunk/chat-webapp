@@ -9,9 +9,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import dev.vaem.websockets.domain.entity.Message;
-import dev.vaem.websockets.domain.exception.ChatExceptionFactory;
-import dev.vaem.websockets.domain.exception.MessageExceptionFactory;
-import dev.vaem.websockets.domain.exception.UserExceptionFactory;
+import dev.vaem.websockets.domain.exception.factory.ChatExceptionFactory;
+import dev.vaem.websockets.domain.exception.factory.MessageExceptionFactory;
+import dev.vaem.websockets.domain.exception.factory.UserExceptionFactory;
 import dev.vaem.websockets.domain.repository.ChatRepository;
 import dev.vaem.websockets.domain.repository.MessageRepository;
 import dev.vaem.websockets.domain.repository.UserRepository;

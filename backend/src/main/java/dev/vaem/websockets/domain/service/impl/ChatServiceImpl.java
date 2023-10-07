@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import dev.vaem.websockets.domain.entity.Chat;
-import dev.vaem.websockets.domain.exception.ChatExceptionFactory;
+import dev.vaem.websockets.domain.exception.factory.ChatExceptionFactory;
 import dev.vaem.websockets.domain.repository.ChatRepository;
 import dev.vaem.websockets.domain.repository.MessageRepository;
 import dev.vaem.websockets.domain.service.ChatService;

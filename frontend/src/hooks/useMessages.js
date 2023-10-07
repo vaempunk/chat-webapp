@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { API_BASE_URL, WS_BASE_URL } from "../utils/apiConst";
-import { AuthUtils } from "../utils/authUtils";
 import { Stomp } from "@stomp/stompjs";
+import { useEffect, useRef, useState } from "react";
+import { WS_BASE_URL } from "../utils/apiConst";
+import { AuthUtils } from "../utils/authUtils";
+import MessageApi from "../utils/messageApi";
 
 function useMessages(chatId) {
   const [messages, setMessages] = useState([]);
@@ -18,12 +19,7 @@ function useMessages(chatId) {
 
   useEffect(() => {
     if (!chatId) return;
-    fetch(`${API_BASE_URL}/chats/${chatId}/messages`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + AuthUtils.getToken(),
-      },
-    })
+    MessageApi.getMessages(chatId)
       .then((resp) => resp.json())
       .then((data) => {
         setMessages(data.content);

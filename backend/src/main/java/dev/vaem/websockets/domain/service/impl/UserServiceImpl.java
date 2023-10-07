@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 import dev.vaem.websockets.domain.entity.Role;
 import dev.vaem.websockets.domain.entity.Role.Name;
+import dev.vaem.websockets.domain.exception.factory.UserExceptionFactory;
 import dev.vaem.websockets.domain.entity.User;
-import dev.vaem.websockets.domain.exception.UserExceptionFactory;
 import dev.vaem.websockets.domain.repository.RoleRepository;
 import dev.vaem.websockets.domain.repository.UserRepository;
 import dev.vaem.websockets.domain.service.UserService;

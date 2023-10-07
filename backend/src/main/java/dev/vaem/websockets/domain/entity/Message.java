@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Entity
@@ -31,28 +32,10 @@ public class Message {
 
     private Instant sentAt;
 
-    public long getSenderId() {
-        if (sender == null)
-            return 0;
-        return sender.getId();
-    }
+    @Transient
+    private long senderId;
 
-    public void setSenderId(long senderId) {
-        if (sender == null)
-            sender = new User();
-        sender.setId(senderId);
-    }
-
-    public long getChatId() {
-        if (chat == null)
-            return 0;
-        return chat.getId();
-    }
-
-    public void setChatId(long chatId) {
-        if (chat == null)
-            chat = new Chat();
-        chat.setId(chatId);
-    }
+    @Transient
+    private long chatId;
 
 }

@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.vaem.websockets.domain.entity.Message;
 import dev.vaem.websockets.domain.service.MessageService;
 import dev.vaem.websockets.web.dto.message.MessageDeleteResponse;
+import dev.vaem.websockets.web.dto.message.MessageResponse;
 import dev.vaem.websockets.web.dto.message.MessageSendRequest;
+import dev.vaem.websockets.web.util.mapper.MessageMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
@@ -30,13 +32,14 @@ public class MessageController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @GetMapping("/chats/{chatId}/messages")
-    public Page<Message> getMessages(@PathVariable("chatId") @Positive long chatId,
+    public Page<MessageResponse> getMessages(@PathVariable("chatId") @Positive long chatId,
             @RequestParam(name = "page", defaultValue = "0") @Min(0) int page) {
-        return messageService.getAllMessagesInChat(chatId, PageRequest.of(page, 100, Sort.by("sentAt").descending()));
+        return messageService.getAllMessagesInChat(chatId, PageRequest.of(page, 100, Sort.by("sentAt").descending()))
+                .map(MessageMapper::entityToResponse);
     }
 
     @PostMapping("/chats/{chatId}/messages")
-    public Message sendMessage(
+    public MessageResponse sendMessage(
             @RequestBody @Valid MessageSendRequest messageRequest,
             @PathVariable("chatId") @Positive long chatId,
             @AuthenticationPrincipal long myId) {
@@ -45,14 +48,16 @@ public class MessageController {
         message.setSenderId(myId);
         message.setChatId(chatId);
         message = messageService.sendMessage(message);
-        simpMessagingTemplate.convertAndSend("/topic/%d/messages".formatted(chatId), message);
-        return message;
+        var messageResponse = MessageMapper.entityToResponse(message);
+        simpMessagingTemplate.convertAndSend("/topic/%d/messages".formatted(chatId), messageResponse);
+        return messageResponse;
     }
 
     @DeleteMapping("/messages/{id}")
     public void deleteMessage(@PathVariable("id") @Positive long messageId) {
         var message = messageService.deleteMessage(messageId);
-        simpMessagingTemplate.convertAndSend("/topic/%d/messages/delete".formatted(message.getChat().getId()), new MessageDeleteResponse(messageId));
+        simpMessagingTemplate.convertAndSend("/topic/%d/messages/delete".formatted(message.getChat().getId()),
+                new MessageDeleteResponse(messageId));
 
     }
 

@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
-import { API_BASE_URL } from "../utils/apiConst";
-import { AuthUtils } from "../utils/authUtils";
+import { UserApi } from "../utils/userApi";
 
 function useUser() {
   const [user, setUser] = useState({ role: { name: "" } });
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/users/me`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + AuthUtils.getToken(),
-      },
-    })
+    UserApi.getMe()
       .then((resp) => resp.json())
       .then((data) => {
         setUser(data);

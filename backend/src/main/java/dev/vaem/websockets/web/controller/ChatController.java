@@ -15,13 +15,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.vaem.websockets.domain.entity.Chat;
-import dev.vaem.websockets.domain.entity.User;
 import dev.vaem.websockets.domain.service.ChatParticipantService;
 import dev.vaem.websockets.domain.service.ChatService;
 import dev.vaem.websockets.web.dto.PropertyAvailabilityResponse;
 import dev.vaem.websockets.web.dto.chat.ChatCreateRequest;
 import dev.vaem.websockets.web.dto.chat.ChatNameAvailabilityRequest;
+import dev.vaem.websockets.web.dto.chat.ChatResponse;
 import dev.vaem.websockets.web.dto.chat.ChatUpdateRequest;
+import dev.vaem.websockets.web.dto.user.UserResponse;
+import dev.vaem.websockets.web.util.mapper.ChatMapper;
+import dev.vaem.websockets.web.util.mapper.UserMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -34,22 +37,25 @@ public class ChatController {
     private final ChatParticipantService chatParticipantService;
 
     @GetMapping("/chats/{id}")
-    public Chat getChat(@PathVariable("id") long chatId) {
-        return chatService.getChat(chatId);
+    public ChatResponse getChat(@PathVariable("id") long chatId) {
+        var chat = chatService.getChat(chatId);
+        return ChatMapper.entityToResponse(chat);
     }
 
     @GetMapping("/chats")
-    public Page<Chat> getChats(@RequestParam(name = "page", defaultValue = "0") @Min(0) int page) {
-        return chatService.getChats(PageRequest.of(page, 100, Sort.by("name").ascending()));
+    public Page<ChatResponse> getChats(@RequestParam(name = "page", defaultValue = "0") @Min(0) int page) {
+        return chatService.getChats(PageRequest.of(page, 100, Sort.by("name").ascending()))
+                .map(ChatMapper::entityToResponse);
     }
 
     @PostMapping("/chats")
     @ResponseStatus(HttpStatus.CREATED)
-    public Chat addChat(@RequestBody @Valid ChatCreateRequest chatRequest) {
+    public ChatResponse addChat(@RequestBody @Valid ChatCreateRequest chatRequest) {
         var chat = new Chat();
         chat.setName(chatRequest.name());
         chat.setCooldownMs(chatRequest.cooldownMs());
-        return chatService.addChat(chat);
+        chat = chatService.addChat(chat);
+        return ChatMapper.entityToResponse(chat);
     }
 
     @GetMapping("/chats/name-availability")
@@ -60,11 +66,12 @@ public class ChatController {
     }
 
     @PutMapping("/chats/{id}")
-    public Chat updateChat(@PathVariable("id") long chatId, @RequestBody @Valid ChatUpdateRequest chatRequest) {
+    public ChatResponse updateChat(@PathVariable("id") long chatId, @RequestBody @Valid ChatUpdateRequest chatRequest) {
         var chat = new Chat();
         chat.setId(chatId);
         chat.setCooldownMs(chatRequest.cooldownMs());
-        return chatService.updateChat(chat);
+        chat = chatService.updateChat(chat);
+        return ChatMapper.entityToResponse(chat);
     }
 
     @DeleteMapping("/chats/{id}")
@@ -73,10 +80,11 @@ public class ChatController {
     }
 
     @GetMapping("/chats/{id}/participants")
-    public Page<User> getChatParticipants(@PathVariable("id") long chatId,
+    public Page<UserResponse> getChatParticipants(@PathVariable("id") long chatId,
             @RequestParam(name = "page", defaultValue = "0") @Min(0) int page) {
         return chatParticipantService.getParticipants(chatId,
-                PageRequest.of(page, 100, Sort.by("sender.username").ascending()));
+                PageRequest.of(page, 100, Sort.by("sender.username").ascending()))
+                .map(UserMapper::entityToResponse);
     }
 
 }

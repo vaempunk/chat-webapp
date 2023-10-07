@@ -8,12 +8,11 @@ import {
   ListSubheader,
   Stack,
 } from "@mui/material";
+import { useState } from "react";
 import useChats from "../../hooks/useChats";
 import useUser from "../../hooks/useUser";
-import { useState } from "react";
 import AddChatDialog from "./AddChatDialog";
 import ChatDeleteDialog from "./ChatDeleteDialog";
-import { AuthUtils } from "../../utils/authUtils";
 
 function ChatBar(props) {
   const { currentChatId, onChangeChatId } = props;

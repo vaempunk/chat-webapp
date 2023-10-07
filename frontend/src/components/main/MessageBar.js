@@ -7,21 +7,19 @@ import {
   ListSubheader,
   Stack,
 } from "@mui/material";
-import { useReducer } from "react";
+import moment from "moment/moment";
 import useMessages from "../../hooks/useMessages";
 import useUser from "../../hooks/useUser";
-import messageReducer from "../../reducers/messageReducer";
+import MessageApi from "../../utils/messageApi";
 import MessageForm from "./MessageForm";
-import moment from "moment/moment";
 
 function MessageBar(props) {
   const { currentChatId } = props;
   const messages = useMessages(currentChatId);
-  const [state, dispatch] = useReducer(messageReducer, { error: null });
   const user = useUser();
 
   function onMessageDelete(messageId) {
-    dispatch({ type: "DELETE", messageId });
+    MessageApi.deleteMessage(messageId);
   }
 
   const messageList = messages
@@ -49,7 +47,10 @@ function MessageBar(props) {
             secondary={moment(message.sentAt, moment.ISO_8601).fromNow()}
           ></ListItemText>
           {user.role.name === "ADMIN" && (
-            <IconButton onClick={() => onMessageDelete(message.id)} sx={{height: "100%"}}>
+            <IconButton
+              onClick={() => onMessageDelete(message.id)}
+              sx={{ height: "100%" }}
+            >
               <DeleteIcon />
             </IconButton>
           )}

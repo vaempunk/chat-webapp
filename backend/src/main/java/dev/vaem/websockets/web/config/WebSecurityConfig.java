@@ -5,7 +5,9 @@ import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -33,12 +35,19 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder builder) {
+        return builder.getOrBuild();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/**", "/signup/**", "/chat/**", "/", "*.js", "*.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/auth/**", "/signup/**", "/chat/**", "/", "*.js", "*.html", "/swagger-ui/**",
+                                "/v3/api-docs/**")
+                        .permitAll()
                         .requestMatchers(HttpMethod.POST, "/chats").hasRole(Role.Name.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/chats/*").hasRole(Role.Name.ADMIN.name())
                         .requestMatchers(HttpMethod.DELETE, "/chats/*").hasRole(Role.Name.ADMIN.name())

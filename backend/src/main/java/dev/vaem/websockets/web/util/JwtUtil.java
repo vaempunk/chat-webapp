@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import dev.vaem.websockets.domain.entity.Role;
+import dev.vaem.websockets.web.util.mapper.RoleMapper;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 

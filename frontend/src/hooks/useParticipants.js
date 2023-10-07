@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
-import { AuthUtils } from "../utils/authUtils";
+import ChatApi from "../utils/chatApi";
 
 function useParticipants(chatId) {
   const [participants, setParticipants] = useState([]);
 
   useEffect(() => {
     if (!chatId) return;
-    fetch(`http://localhost:8080/chats/${chatId}/participants`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + AuthUtils.getToken(),
-      },
-    })
+    ChatApi.getParticipants(chatId)
       .then((resp) => resp.json())
       .then((data) => {
         setParticipants(data.content);

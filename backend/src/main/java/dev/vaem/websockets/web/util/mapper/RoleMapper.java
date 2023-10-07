@@ -1,4 +1,4 @@
-package dev.vaem.websockets.web.util;
+package dev.vaem.websockets.web.util.mapper;
 
 import dev.vaem.websockets.domain.entity.Role;
 
